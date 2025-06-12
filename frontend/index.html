@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simple E-commerce Store</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* --- Welcome Section Styles --- */
+        #welcome-section {
+            height: 100vh;
+            background: linear-gradient(135deg, #9d66d8 0%, #6490db 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            text-align: center;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        #welcome-section::before,
+        #welcome-section::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+            filter: blur(100px);
+            animation: floatAround 20s linear infinite;
+            z-index: 0;
+        }
+
+        #welcome-section::before {
+            width: 250px;
+            height: 250px;
+            background: #ff6ec4;
+            top: 20%;
+            left: -15%;
+            animation-delay: 0s;
+        }
+
+        #welcome-section::after {
+            width: 300px;
+            height: 300px;
+            background: #7873f5;
+            bottom: 15%;
+            right: -20%;
+            animation-delay: 10s;
+        }
+
+        #welcome-section h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.4em;
+            color: #fff;
+            text-shadow:
+                0 0 10px #ff6ec4,
+                0 0 20px #ff6ec4,
+                0 0 30px #ff6ec4,
+                0 0 40px #7873f5,
+                0 0 70px #7873f5,
+                0 0 80px #7873f5;
+            animation: neonGlow 3s ease-in-out infinite alternate;
+            position: relative;
+            z-index: 1;
+        }
+
+        #welcome-section p {
+            font-size: 1.5rem;
+            max-width: 550px;
+            margin: 0 auto 2em;
+            color: #e0e0ff;
+            text-shadow: 0 0 10px rgba(255 255 255 / 0.5);
+            animation: fadeInUp 1.5s ease forwards;
+            opacity: 0;
+            position: relative;
+            z-index: 1;
+            animation-delay: 0.5s;
+        }
+
+        #welcome-section button {
+            padding: 15px 45px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #6a11cb;
+            background: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow:
+                0 8px 30px rgba(255, 110, 196, 0.5);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        #welcome-section button:hover {
+            background: #ff6ec4;
+            color: #fff;
+            box-shadow:
+                0 15px 40px #ff6ec4;
+            transform: scale(1.05);
+        }
+
+        @keyframes neonGlow {
+
+            0%,
+            100% {
+                text-shadow:
+                    0 0 10px #ff6ec4,
+                    0 0 20px #ff6ec4,
+                    0 0 30px #ff6ec4,
+                    0 0 40px #7873f5,
+                    0 0 70px #7873f5,
+                    0 0 80px #7873f5;
+            }
+
+            50% {
+                text-shadow:
+                    0 0 20px #ff6ec4,
+                    0 0 30px #ff6ec4,
+                    0 0 40px #ff6ec4,
+                    0 0 50px #7873f5,
+                    0 0 90px #7873f5,
+                    0 0 100px #7873f5;
+            }
+        }
+
+        @keyframes floatAround {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(30px, 30px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+
+        /* Hide main content initially */
+        #main-content {
+            display: none;
+        }
+
+        #notification-bar {
+            background-color: #ffe0e6;
+            color: #b30047;
+            padding: 10px 20px;
+            text-align: center;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 16px;
+            border-bottom: 1px solid #ffccd5;
+        }
+
+        #notification-bar a {
+            color: #b30047;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        #notification-bar a:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 🎉 Welcome Screen -->
+    <section id="welcome-section">
+        <h1>Fresh Hue</h1>
+        <p>Glow with Confidence - Beauty Redefined</p>
+        <button id="start-btn">⬆️ Start Shopping</button>
+    </section>
+
+    <!-- 🛍 Main Content -->
+    <div id="main-content">
+        <header>
+            <h1>Products</h1>
+            <nav>
+                <a href="cart.html">Cart (<span id="cart-count">0</span>)</a> |
+                <a href="orders.html" id="orders-link" style="display: none;">Order History</a> |
+                <a href="login.html" id="login-link">Login</a>
+                <a href="register.html" id="register-link" style="margin-left: 10px;">Register</a>
+                <a href="#" id="logout-link" style="display:none; margin-left: 10px;">Logout</a>
+
+            </nav>
+            <div id="message-bar"
+                style="display:none; padding: 10px; text-align: center; font-weight: 600; font-family: 'Segoe UI', sans-serif; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin: 15px 0; border-radius: 6px;">
+            </div>
+
+        </header>
+
+        <div id="notification-bar">
+            📦 Want to view your order history? <a href="register.html">Register now</a> and never miss a beat!
+        </div>
+
+        <div id="filters">
+            <input type="text" id="search-input" placeholder="Search by name..." />
+            <select id="category-filter">
+                <option value="">All Categories</option>
+                <option value="Foundation">Foundation</option>
+                <option value="Primer">Primer</option>
+                <option value="Concealer">Concealer</option>
+                <option value="Blush">Blush</option>
+                <option value="Powder">Powder</option>
+                <option value="Contour">Contour</option>
+                <option value="BB Cream">BB Cream</option>
+                <option value="Fixing Spray">Blush</option>
+
+            </select>
+            <select id="price-filter">
+                <option value="">All Prices</option>
+                <option value="under-1000">Under Rs. 1000</option>
+                <option value="1000-2000">Rs. 1000–2000</option>
+                <option value="2000-3000">Rs. 2000–3000</option>
+                <option value="above-3000">Above Rs. 3000</option>
+            </select>
+            <select id="sort-filter">
+                <option value="">Sort by Price</option>
+                <option value="asc">Price: Low to High</option>
+                <option value="desc">Price: High to Low</option>
+            </select>
+        </div>
+
+        <div id="product-list"></div>
+    </div>
+
+    <script>
+
+        document.getElementById('start-btn').addEventListener('click', () => {
+            document.getElementById('welcome-section').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+        });
+
+        const API_BASE = 'http://localhost:5000/api';
+        const productList = document.getElementById('product-list');
+        const cartCount = document.getElementById('cart-count');
+        const loginLink = document.getElementById('login-link');
+        const registerLink = document.getElementById('register-link');
+        const logoutLink = document.getElementById('logout-link');
+
+        function loadCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const count = cart.reduce((acc, item) => acc + item.quantity, 0);
+            cartCount.textContent = count;
+        }
+
+        function showAuthLinks() {
+            const token = localStorage.getItem('token');
+            loginLink.style.display = token ? 'none' : 'inline';
+            registerLink.style.display = token ? 'none' : 'inline';
+            logoutLink.style.display = token ? 'inline' : 'none';
+
+            const notificationBar = document.getElementById('notification-bar');
+            if (notificationBar) {
+                notificationBar.style.display = token ? 'none' : 'block';
+            }
+
+            const ordersLink = document.getElementById('orders-link');
+            if (ordersLink) {
+                ordersLink.style.display = token ? 'inline' : 'none';
+            }
+
+        }
+
+        logoutLink.onclick = () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            showAuthLinks();
+
+            const msg = document.getElementById('message-bar');
+            msg.textContent = 'You have been successfully logged out.';
+            msg.style.display = 'block';
+            msg.style.backgroundColor = '#d4edda';
+            msg.style.color = '#155724';
+            msg.style.border = '1px solid #c3e6cb';
+
+            // Optional: Hide the message after 3 seconds
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+        };
+
+
+        async function fetchProducts() {
+            const res = await fetch(`${API_BASE}/products`);
+            let products = await res.json();
+
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const category = document.getElementById('category-filter').value.toLowerCase();
+            const priceFilter = document.getElementById('price-filter').value;
+            const sortOrder = document.getElementById('sort-filter').value;
+
+            if (searchInput) {
+                products = products.filter(p => p.name.toLowerCase().includes(searchInput));
+            }
+
+            if (category) {
+                products = products.filter(p => p.name.toLowerCase().includes(category));
+            }
+
+            products = products.filter(p => {
+                const price = p.price;
+                if (priceFilter === "under-1000") return price < 1000;
+                if (priceFilter === "1000-2000") return price >= 1000 && price <= 2000;
+                if (priceFilter === "2000-3000") return price > 2000 && price <= 3000;
+                if (priceFilter === "above-3000") return price > 3000;
+                return true;
+            });
+
+            if (sortOrder === 'asc') {
+                products.sort((a, b) => a.price - b.price);
+            } else if (sortOrder === 'desc') {
+                products.sort((a, b) => b.price - a.price);
+            }
+
+            renderProducts(products);
+        }
+
+        function renderProducts(products) {
+            productList.innerHTML = '';
+            if (products.length === 0) {
+                productList.innerHTML = '<p>No products found.</p>';
+                return;
+            }
+
+            products.forEach(product => {
+                const div = document.createElement('div');
+                div.className = 'product';
+                div.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" class="product-img" />
+          <h3><a href="product.html?id=${product._id}">${product.name}</a></h3>
+          <p>${product.description || ''}</p>
+          <p>Price: Rs. ${product.price}</p>
+          <button data-id="${product._id}">Add to Cart</button>
+        `;
+                productList.appendChild(div);
+            });
+
+            productList.querySelectorAll('button').forEach(btn => {
+                btn.onclick = () => {
+                    const id = btn.getAttribute('data-id');
+                    addToCart(id);
+                };
+            });
+        }
+
+        function addToCart(productId) {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const existing = cart.find(item => item.productId === productId);
+
+            if (existing) {
+                existing.quantity++;
+            } else {
+                cart.push({ productId, quantity: 1 });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCartCount();
+
+            const msg = document.getElementById('message-bar');
+            msg.textContent = 'Product added to cart!';
+            msg.style.display = 'block';
+            msg.style.backgroundColor = '#d1ecf1';
+            msg.style.color = '#0c5460';
+            msg.style.border = '1px solid #bee5eb';
+
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+        }
+
+
+        document.getElementById('search-input').addEventListener('input', fetchProducts);
+        document.getElementById('category-filter').addEventListener('change', fetchProducts);
+        document.getElementById('price-filter').addEventListener('change', fetchProducts);
+        document.getElementById('sort-filter').addEventListener('change', fetchProducts);
+
+        window.onload = () => {
+            loadCartCount();
+            showAuthLinks();
+            fetchProducts();
+        };
+    </script>
+</body>
+
+</html>

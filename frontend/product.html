@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Product Details</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Floating message bar */
+    #message-bar {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #d4edda;
+      color: #155724;
+      padding: 12px 18px;
+      border: 1px solid #c3e6cb;
+      border-radius: 6px;
+      font-family: 'Segoe UI', sans-serif;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      transition: opacity 0.3s ease;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Product Details</h1>
+    <nav>
+      <a href="index.html">Home</a> |
+      <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+    </nav>
+  </header>
+
+  <div id="product-detail"></div>
+
+  <!-- Floating Message -->
+  <div id="message-bar"></div>
+
+  <script>
+    const API_BASE = 'http://localhost:5000/api';
+    const productDetail = document.getElementById('product-detail');
+    const cartCount = document.getElementById('cart-count');
+
+    function loadCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const count = cart.reduce((acc, item) => acc + item.quantity, 0);
+      cartCount.textContent = count;
+    }
+
+    function showMessage(text) {
+      const msg = document.getElementById('message-bar');
+      msg.textContent = text;
+      msg.style.display = 'block';
+      msg.style.opacity = '1';
+      setTimeout(() => {
+        msg.style.opacity = '0';
+        setTimeout(() => msg.style.display = 'none', 300);
+      }, 3000);
+    }
+
+    function addToCart(productId) {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const existing = cart.find(item => item.productId === productId);
+
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push({ productId, quantity: 1 });
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cart));
+      loadCartCount();
+      showMessage('🛒 Added to cart!');
+    }
+
+    // Get product ID from URL
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+
+    async function fetchProduct() {
+      if (!productId) {
+        productDetail.innerHTML = '<p>Product ID missing.</p>';
+        return;
+      }
+
+      const res = await fetch(`${API_BASE}/products/${productId}`);
+      if (!res.ok) {
+        productDetail.innerHTML = '<p>Product not found.</p>';
+        return;
+      }
+      const product = await res.json();
+
+      productDetail.innerHTML = `
+        <div class="product-detail-card">
+          <img src="${product.image}" alt="${product.name}" class="product-img" />
+          <h2>${product.name}</h2>
+          <p>${product.description || ''}</p>
+          <p>Price: Rs. ${product.price}</p>
+          <button id="add-to-cart">Add to Cart</button>
+        </div>
+      `;
+
+      document.getElementById('add-to-cart').onclick = () => addToCart(product._id);
+    }
+
+    window.onload = () => {
+      loadCartCount();
+      fetchProduct();
+    };
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Order History</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { margin-bottom: 20px; }
+    .back-link {
+      margin-bottom: 20px;
+      display: inline-block;
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .order {
+      border: 1px solid #ccc; 
+      margin-bottom: 20px; 
+      padding: 15px; 
+      border-radius: 5px;
+    }
+    .order-date { font-weight: bold; margin-bottom: 10px; }
+    .product {
+      margin-left: 20px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-link">&larr; Back to Products</a>
+  <h1>Your Order History</h1>
+  <div id="orders-container">Loading orders...</div>
+
+  <script>
+    // Helper function to format date nicely
+    function formatDate(dateStr) {
+      const d = new Date(dateStr);
+      return d.toLocaleString();
+    }
+
+    async function fetchOrders() {
+      const ordersContainer = document.getElementById('orders-container');
+      const token = localStorage.getItem('token');  // Assumes token saved on login
+
+      if (!token) {
+        ordersContainer.innerHTML = '<p>Please log in to view your orders.</p>';
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:5000/api/orders', {
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          if(response.status === 401) {
+            ordersContainer.innerHTML = '<p>Session expired or unauthorized. Please log in again.</p>';
+          } else {
+            ordersContainer.innerHTML = `<p>Error loading orders: ${response.statusText}</p>`;
+          }
+          return;
+        }
+
+        const orders = await response.json();
+
+        if (!orders.length) {
+          ordersContainer.innerHTML = '<p>No orders found.</p>';
+          return;
+        }
+
+        // Clear loading text
+        ordersContainer.innerHTML = '';
+
+        // Loop through orders and display them
+        orders.forEach(order => {
+          const orderDiv = document.createElement('div');
+          orderDiv.className = 'order';
+
+          // Order date and total
+          orderDiv.innerHTML = `
+            <div class="order-date">Order Date: ${formatDate(order.date)}</div>
+            <div>Total: $${order.total.toFixed(2)}</div>
+            <div><strong>Products:</strong></div>
+          `;
+
+          // List products
+          order.products.forEach(item => {
+            const product = item.productId; // populated product object
+            const productDiv = document.createElement('div');
+            productDiv.className = 'product';
+            productDiv.textContent = `${product.name} (Quantity: ${item.quantity}) - $${product.price.toFixed(2)}`;
+            orderDiv.appendChild(productDiv);
+          });
+
+          ordersContainer.appendChild(orderDiv);
+        });
+      } catch (error) {
+        ordersContainer.innerHTML = `<p>Error fetching orders: ${error.message}</p>`;
+      }
+    }
+
+    fetchOrders();
+  </script>
+</body>
+</html>
